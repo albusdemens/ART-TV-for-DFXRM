@@ -3,8 +3,8 @@ clear; close all;
 load data.mat
 
 ss = 30;                                              % Target area (cm)
-geostruct.range_angle = 38*180/112.5;                          % Angular span
-geostruct.nproj = 38;                         % Number of simulated projections
+geostruct.range_angle = 96*180/225;                          % Angular span
+geostruct.nproj = 96;                         % Number of simulated projections
 geostruct.ndet = size(Fab_resc,2);                          % Number of detector pixels
 geostruct.nElem = 1;                                  % Number of detectors
 geostruct.Sep = 0;                                    % Pixels' gap
@@ -31,12 +31,12 @@ for i=1:300
     %figure;
     %subplot(1,2,1);
     %imagesc(proj), colorbar
-    proj(:,1:122)=[];
-    rec_2(:,:,i) = ART_TV_reconstruct_2d_new(proj,geostruct,param,deadThresh,thresh,backVal);
+    proj(:,97:161)=[];
+    rec(:,:,i) = ART_TV_reconstruct_2d_new(proj,geostruct,param,deadThresh,thresh,backVal);
     %subplot(1,2,2);
     %imagesc(rec(:,:,i)), colorbar, caxis([0 500])
     %pause(0.01)
     progress =  100*i/300;
     disp(progress);
 end
-save rec_2.mat rec_2
+save rec.mat rec

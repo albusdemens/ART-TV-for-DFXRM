@@ -1,11 +1,31 @@
-clear; close all;
+clear all
+% close all
 
-load data.mat
+%% Data processing
+slice = 150;
+load data.mat; 
+figure, imagesc(squeeze(Fab_resc(:,slice,:)))
+title('Starting sinogram')
+theta = 0:0.8:180;
 
+deadvalue = -2000;
+new_sino(1:96,:,:) = Fab_resc(1:96,:,:); % first data interval
+new_sino(97:147,:,:) = deadvalue ; %empty data
+for i = 1:35 %second data interval
+    new_sino(2*(i-1)+148,:,:) = Fab_resc(122+i,:,:);
+    new_sino(2*(i-1)+148+1,:,:) = deadvalue ;
+end
+new_sino(217:220,:,:) = deadvalue; %last missing projection
+for i = 1:4
+    new_sino(2*(i-1)+221,:,:) = Fab_resc(157+i,:,:);
+    new_sino(2*(i-1)+221+1,:,:) = deadvalue ;
+end
+
+%% Reconstruction
 ss = 30;                                              % Target area (cm)
-geostruct.range_angle = 96*180/225;                          % Angular span
-geostruct.nproj = 96;                         % Number of simulated projections
-geostruct.ndet = size(Fab_resc,2);                          % Number of detector pixels
+geostruct.range_angle = 180;                          % Angular span
+geostruct.nproj = size(new_sino,1);                         % Number of simulated projectons
+geostruct.ndet = size(new_sino,2);                          % Number of detector pixels
 geostruct.nElem = 1;                                  % Number of detectors
 geostruct.Sep = 0;                                    % Pixels' gap
 geostruct.det_space = 0.1*geostruct.ndet;           % Size of detector in cm (pixels*pixel size)
@@ -27,16 +47,10 @@ thresh = -3e-2;                                         % Any values lower than 
 backVal = 0;                                          % Background mask
 
 for i=1:300
-    proj = squeeze(Fab_resc(:,i,:))';
-    %figure;
-    %subplot(1,2,1);
-    %imagesc(proj), colorbar
-    proj(:,97:161)=[];
+    proj = squeeze(new_sino(:,i,:))'; 
     rec(:,:,i) = ART_TV_reconstruct_2d_new(proj,geostruct,param,deadThresh,thresh,backVal);
-    %subplot(1,2,2);
-    %imagesc(rec(:,:,i)), colorbar, caxis([0 500])
-    %pause(0.01)
-    progress =  100*i/300;
-    disp(progress);
+    title('Recsonstruction')
+    pause(0.01)
+    progress =  100*i/300
 end
 save rec.mat rec
