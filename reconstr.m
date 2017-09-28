@@ -48,8 +48,9 @@ backVal = 0;                                          % Background mask
 for i=1:300
     proj = squeeze(new_sino(:,i,:))';
     rec(:,:,i) = ART_TV_reconstruct_2d_new(proj,geostruct,param,deadThresh,thresh,backVal);
-    title('Reconstruction')
-    pause(0.01)
-    progress =  100*i/300
+    %title('Reconstruction');
+    %pause(0.01)
+    progress =  100*i/300;
+    disp(progress);
 end
 save rec.mat rec
