@@ -1,0 +1,9 @@
+*.npy
+
+*.vtk
+
+*.mat
+
+Mosaicity_plot/
+
+Shape_comparison/
