@@ -1,5 +1,4 @@
-clear all
-% close all
+clear; close all;
 
 %% Data processing
 slice = 150;
