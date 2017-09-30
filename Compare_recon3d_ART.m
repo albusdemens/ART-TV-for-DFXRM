@@ -1,5 +1,5 @@
 % Script to compare the volumes reconstructed using recon3d and ART+TV. It
-% also returns the recon3d volume - the ART+TV one
+% also returns the orientation distribution for the reconstrcuted volume
 
 close all; clear;
 
@@ -140,7 +140,7 @@ end
 %     end
 % end
 
-%%% Second reconstruction modality: consider the volume from ART+TV (all 
+%%% Second reconstruction modality: consider the volume from ART+TV (all
 % projections as input) and look at mosaicity for all points inside it. We
 % ignore completeness threshold
 % for aa = 1:size(V_recon_3,1)
