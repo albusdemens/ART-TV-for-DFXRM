@@ -7,3 +7,7 @@
 Mosaicity_plot/
 
 Shape_comparison/
+
+*.m~
+
+Volume_r3d/

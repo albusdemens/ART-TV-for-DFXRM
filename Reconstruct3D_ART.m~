@@ -43,7 +43,6 @@ for aa = 1:size(R,1)
     end
 end
 
-% Plot the 3D volume
 %figure; scatter3(X(:,1), X(:,2), X(:,3));
 %xlabel('X'); ylabel('Y'); zlabel('Z');
  
@@ -57,10 +56,10 @@ for i = 1:size(R_bin,2)
     end
 end
 
-% Plot the volume projection along an axis
+% Plot the projection
 figure; h = pcolor(imrotate(S, 270)); shading flat;
 
-save('Binary_vol_ART_first_p.mat', 'R_bin');
+save('Binary_vol_ART_allp.mat', 'R_bin');
 
 % Save for Paraview
 R_bin_vtk = zeros(size(R_bin));
@@ -74,4 +73,4 @@ for i = 1:size(R_bin_1,1)
 end
 R_bin_vtk = R_bin_2;
 R_bin_vtk(R_bin_2 == 0) = NaN;
-savevtk(R_bin_vtk, 'Vol_Art_first_p.vtk');
+savevtk(R_bin_vtk, 'Vol_Art.vtk');

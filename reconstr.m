@@ -1,3 +1,5 @@
+% Script to reconstruct a tomography dataset using ART+TV
+
 clear; close all;
 
 %% Data processing

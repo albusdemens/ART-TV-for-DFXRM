@@ -14,35 +14,11 @@ V = Vol.R_bin;
 Vol_recon = load('V_mos_recon3d.mat');
 V_recon = Vol_recon.V_th_mos;
 
-% For each voxel, calculate the correspnding HVS color. Formula from H.
-% Simons
-V_rec_3_HVS = zeros(size(V_recon,3));
-for aa = 1:size(V_recon,1)
-    for bb = 1:size(V_recon,2)
-        for cc = 1:size(V_recon,3)
-            if (V_recon(aa,bb,cc,3)) > 0
-                vr = V_recon(aa,bb,cc,1);
-                ur = V_recon(aa,bb,cc,2);
-                V_rec_3_HVS(aa,bb,cc,1) = wrapTo2Pi(atan2(vr,ur))/pi/2;
-                V_rec_3_HVS(aa,bb,cc,2) = sqrt(ur^2+vr^2)/sqrt(2);
-                V_rec_3_HVS(aa,bb,cc,3) = 1;
-            end
-        end
-    end
-end
-
-for i = 1:size(V_recon,3)
-    gg = figure;
-    image(hsv2rgb(squeeze(V_rec_3_HVS(:,i,:,:))));
-    saveas(gg,sprintf('Volume_r3d/mosaicity_layer_%03i.png', i), 'png');
-    close;
-end
-
 % Resize V_recon to have the same dimensions of V
 V_r3d_1 = zeros(300,300,100);
 V_r3d_2 = zeros(300,300,300);
 for i = 1:100
-    V_r3d_1(:,:,i) = imresize(squeeze(V_recon(1:100,1:100,i,3)), [300 300]);
+    V_r3d_1(:,:,i) = imresize(squeeze(V_recon(1:100,1:100,i)), [300 300]);
 end
 for j = 1:300
     V_r3d_2(j,:,:) = imresize(squeeze(V_r3d_1(j,:,:)), [300 300]);
@@ -191,7 +167,7 @@ end
 
 for i = 1:size(V_recon_3,1)
     gg = figure;
-    image(hsv2rgb(squeeze(V_rec_3_HVS(:,i,:,:))));
+    image(hsv2rgb(squeeze(V_rec_3_HVS(i,:,:,:))));
     saveas(gg,sprintf('Mosaicity_plot/mosaicity_layer_%03i.png', i), 'png');
     close;
 end
