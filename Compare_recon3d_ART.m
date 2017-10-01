@@ -3,7 +3,10 @@
 
 close all; clear;
 
-addpath('/npy_matlab_master/');
+addpath('/npy_matlab_master/'); % Command required to lead npy files. If 
+% this doesn't work, add the npy folder using "Add to pach --> selected 
+% folder and subfolders"
+
 % Read reconstructed volume. Format: X, Y, Z, param. Parameters: gamma, mu,
 % completeness
 Summed_img = readNPY('summed_data_astra.npy');
@@ -13,30 +16,6 @@ V = Vol.R_bin;
 % Load volume reconstructed using recon3d
 Vol_recon = load('V_mos_recon3d.mat');
 V_recon = Vol_recon.V_th_mos;
-
-% For each voxel, calculate the correspnding HVS color. Formula from H.
-% Simons
-V_rec_3_HVS = zeros(size(V_recon,3));
-for aa = 1:size(V_recon,1)
-    for bb = 1:size(V_recon,2)
-        for cc = 1:size(V_recon,3)
-            if (V_recon(aa,bb,cc,3)) > 0
-                vr = V_recon(aa,bb,cc,1);
-                ur = V_recon(aa,bb,cc,2);
-                V_rec_3_HVS(aa,bb,cc,1) = wrapTo2Pi(atan2(vr,ur))/pi/2;
-                V_rec_3_HVS(aa,bb,cc,2) = sqrt(ur^2+vr^2)/sqrt(2);
-                V_rec_3_HVS(aa,bb,cc,3) = 1;
-            end
-        end
-    end
-end
-
-for i = 1:size(V_recon,3)
-    gg = figure;
-    image(hsv2rgb(squeeze(V_rec_3_HVS(:,i,:,:))));
-    saveas(gg,sprintf('Volume_r3d/mosaicity_layer_%03i.png', i), 'png');
-    close;
-end
 
 % Resize V_recon to have the same dimensions of V
 V_r3d_1 = zeros(300,300,100);
@@ -109,7 +88,7 @@ for ii = 1:size(V,1)
                 V_intersect(ii,jj,kk) = V_r3d_3(ii,jj,kk);
             end
         end
-    end
+    end    
 end
 
 % Rescale V_intersect fom (300,300,300) to (100,100,100), so that it can be
@@ -128,39 +107,47 @@ end
 
 % % We still require completeness to be greater than 0.5
 % V_intersect_2(V_intersect_2 < 0.5) = 0;
-% % Using the intersetction of the volume, we find the corresponding 4-dim
-% % volume, with information on mosaicity too
-% for aa = 1:size(V_recon_3,1)
-%     for bb = 1:size(V_recon_3,2)
-%         for cc = 1:size(V_recon_3,3)
-%             if V_intersect_2(aa,bb,cc) == 0
-%                 V_recon_3(aa,bb,cc,:) = 0;
-%             end
-%         end
-%     end
-% end
-
-%%% Second reconstruction modality: consider the volume from ART+TV (all
-% projections as input) and look at mosaicity for all points inside it. We
-% ignore completeness threshold
-% for aa = 1:size(V_recon_3,1)
-%     for bb = 1:size(V_recon_3,2)
-%         for cc = 1:size(V_recon_3,3)
-%             if V_intersect_2(aa,bb,cc) == 0
-%                 V_recon_3(aa,bb,cc,:) = 0;
-%             end
-%         end
-%     end
-% end
-
+% Using the intersetction of the volume, we find the corresponding 4-dim
+% volume, with information on mosaicity too
+for aa = 1:size(V_recon_3,1)
+    for bb = 1:size(V_recon_3,2)
+        for cc = 1:size(V_recon_3,3)
+            if V_intersect_2(aa,bb,cc) == 0
+                V_recon_3(aa,bb,cc,:) = 0;
+            end
+        end
+    end
+end
 
 % Rescale the mu and gamma values to [0,1]
 % Maybe also include opticolors
 V_rec_3_resc = zeros(size(V_recon_3));
 range_mu = max(max(max(V_recon_3(:,:,:,1)))) - min(min(min(V_recon_3(:,:,:,1))));
 range_gamma = max(max(max(V_recon_3(:,:,:,2)))) - min(min(min(V_recon_3(:,:,:,2))));
-min_mu = min(min(min(V_recon_3(:,:,:,1))));
+
+list_min_mu = zeros(nnz(V_recon_3),1);
+mu_el_n = 0;
+for i = 1:size(V_recon_3,1)
+    for j = 1:size(V_recon_3,2)
+        for k = 1:size(V_recon_3,3)
+            if V_recon_3(i,j,k) > 0
+                mu_el_n = mu_el_n + 1;
+                list_min_mu(mu_el_n) = V_recon_3(i,j,k);
+            end
+        end
+    end
+end
+
+list_min_mu = list_min_mu(list_min_mu > 0);
+min_mu = min(list_min_mu);
+max_mu = max(max(max(V_recon_3(:,:,:,1))));
 min_gamma = min(min(min(V_recon_3(:,:,:,2))));
+
+%M = unique(V_recon_3(:,:,:,1));
+%G = unique(V_recon_3(:,:,:,2));
+
+%CM = opticolor(M,min_mu,max_mu);
+
 for aa = 1:size(V_recon_3,1)
     for bb = 1:size(V_recon_3,2)
         for cc = 1:size(V_recon_3,3)
@@ -172,8 +159,7 @@ for aa = 1:size(V_recon_3,1)
     end
 end
 
-% For each voxel, calculate the correspnding HVS color. Formula from H.
-% Simons
+% For each voxel, calculate the correspnding HVS color. 
 V_rec_3_HVS = zeros(size(V_recon_3));
 for aa = 1:size(V_recon_3,1)
     for bb = 1:size(V_recon_3,2)
@@ -191,7 +177,7 @@ end
 
 for i = 1:size(V_recon_3,1)
     gg = figure;
-    image(hsv2rgb(squeeze(V_rec_3_HVS(:,i,:,:))));
+    image(hsv2rgb(imrotate(squeeze(V_rec_3_HVS(:,i,:,:)),90)));
     saveas(gg,sprintf('Mosaicity_plot/mosaicity_layer_%03i.png', i), 'png');
     close;
 end
