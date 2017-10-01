@@ -321,14 +321,3 @@ title('Sum diff signal');
 saveas(a, sprintf('Shape_comparison/Proj_%03i.png', angle_num),'png');
 close;
 end
-
-function C = opticolor(Cin,minc, maxc)
-
-C = Cin;
-Cnn = C(~isnan(C));
-sortC = sort( Cnn(:) );
-Imin = sortC(round(length(sortC)*minc));
-Imax = sortC(round(length(sortC)*maxc));
-C(C<Imin)=Imin;
-C(C>Imax)=Imax;
-end
