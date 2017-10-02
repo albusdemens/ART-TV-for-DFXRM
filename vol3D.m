@@ -1,5 +1,10 @@
 % This scipt compares the reconstructed 3D data with the sum of the
-% intensities recorded at different projections
+% intensities recorded at different projections. Both the recon3d and the ART+TV
+% reconstructions are considered
+
+% Alberto Cereser, DTU Fysik
+% September 2017
+% alcer@fysik.dtu.dk
 
 close all; clear;
 

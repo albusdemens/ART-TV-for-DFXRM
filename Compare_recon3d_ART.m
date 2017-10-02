@@ -1,10 +1,14 @@
 % Script to compare the volumes reconstructed using recon3d and ART+TV. It
 % also returns the orientation distribution for the reconstrcuted volume
 
+% Alberto Cereser, DTU Fysik
+% September 2017
+% alcer@fysik.dtu.dk
+
 close all; clear;
 
-addpath('/npy_matlab_master/'); % Command required to lead npy files. If 
-% this doesn't work, add the npy folder using "Add to pach --> selected 
+addpath('/npy_matlab_master/'); % Command required to lead npy files. If
+% this doesn't work, add the npy folder using "Add to pach --> selected
 % folder and subfolders"
 
 % Read reconstructed volume. Format: X, Y, Z, param. Parameters: gamma, mu,
@@ -88,7 +92,7 @@ for ii = 1:size(V,1)
                 V_intersect(ii,jj,kk) = V_r3d_3(ii,jj,kk);
             end
         end
-    end    
+    end
 end
 
 % Rescale V_intersect fom (300,300,300) to (100,100,100), so that it can be
@@ -159,7 +163,7 @@ for aa = 1:size(V_recon_3,1)
     end
 end
 
-% For each voxel, calculate the correspnding HVS color. 
+% For each voxel, calculate the correspnding HVS color.
 V_rec_3_HVS = zeros(size(V_recon_3));
 for aa = 1:size(V_recon_3,1)
     for bb = 1:size(V_recon_3,2)

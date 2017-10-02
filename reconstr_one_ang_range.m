@@ -1,3 +1,9 @@
+% Reconstruct data from the first angular range using the ART+TV approach
+
+% Matteo Busi, DTU Fysik
+% September 2017
+% mbusi@fysik.dtu.dk
+
 clear; close all;
 
 load data.mat

@@ -1,5 +1,9 @@
 % Script to reconstruct a tomography dataset using ART+TV
 
+% Matteo Busi, DTU Fysik
+% September 2017
+% mbusi@fysik.dtu.dk
+
 clear; close all;
 
 %% Data processing

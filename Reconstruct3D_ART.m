@@ -1,3 +1,9 @@
+% Make 3D matrix from images returned by the recon3d reconstruction
+
+% Alberto Cereser, DTU Fysik
+% September 2017
+% alcer@fysik.dtu.dk
+
 close all; clear;
 
 % Load as input output files from reconstr.m
@@ -15,7 +21,7 @@ for i = 1:size(R,3)
     layer2(layer1 > 0) = 1;
     % Fill holes
     layer2 = imfill(layer2);
-    
+
     % To get rid of artefacts, erode and dilate
     se = strel('disk',10);
     l_ed = imdilate(imerode(layer2,se),se);
@@ -46,7 +52,7 @@ end
 % Plot the 3D volume
 %figure; scatter3(X(:,1), X(:,2), X(:,3));
 %xlabel('X'); ylabel('Y'); zlabel('Z');
- 
+
 % Project the reconstructed volume along an axis
 S = zeros(size(R_bin,1), size(R_bin,2));
 for i = 1:size(R_bin,2)
