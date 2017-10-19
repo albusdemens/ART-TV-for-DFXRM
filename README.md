@@ -6,7 +6,7 @@ Technical University of Denmark, Department of Physics, NEXMAP
 
 alcer@fysik.dtu.dk, mbusi@fysik.dtu.dk
 
-The ART-TV reconstruction code combines the Algebraic Reconstruction Technique (ART) and the Total Variation (TV) approach  <sup>[1](#myfootnote1)</sup>. For small diffraction angles, ART-TV can be used to reconstruct data collected during a topo-tomography scan. The available algorithms are designed for dark-field X-ray microscopy ([DFXRM](https://www.nature.com/articles/ncomms7098)) data, collected at beamline BL06 of the European Synchrotron Radiation Facility (ESRF). 
+The ART-TV reconstruction code combines the Algebraic Reconstruction Technique (ART) and the Total Variation (TV) approach<sup>[1](#myfootnote1)</sup>. For small diffraction angles, ART-TV can be used to reconstruct data collected during a topo-tomography scan. The available algorithms are designed for dark-field X-ray microscopy ([DFXRM](https://www.nature.com/articles/ncomms7098)) data, collected at beamline BL06 of the European Synchrotron Radiation Facility (ESRF).
 
 Reconstruction steps:
 
