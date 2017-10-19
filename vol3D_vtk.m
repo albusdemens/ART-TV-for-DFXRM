@@ -1,5 +1,6 @@
-% This script compares the reconstructed 3D data with the sum of the
-% intensities recorded at different projections
+% For a given completeness value, this script returns the corresponding volume
+% using the recon3d reconstruction. The volume is then saved as a vtk file and
+% as a .mat. Input from recon3d.py
 
 % Alberto Cereser, DTU Fysik
 % September 2017
@@ -35,7 +36,7 @@ end
 % Save the selected region
 save('V_mos_recon3d.mat', 'V_th_mos');
 
-% Rescale, se we can compare with the reocnstruction from ART+TV
+% Rescale, se we can compare with the reconstruction from ART+TV
 V_resc = zeros((size(V,1) * 3) -3, (size(V,2) * 3) -3, (size(V,3) * 3) - 3);
 for jj = 1:(size(V,3) - 1)
     Layer = squeeze(V_th(1:100,1:100,jj));
