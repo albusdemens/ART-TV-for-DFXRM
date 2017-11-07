@@ -16,3 +16,7 @@ Reconstruction steps:
 `Compare_recon3d_ART.m` compares the 3D grain reconstruction returned by ART-TV with the reconstruction returned by Recon3D and with the experimental data.  The script also combines information from the Recon3D reconstruction and from the ART-TV one in a single volume: the shape of the volume is defined by the ART-TV reconstruction, and the voxels in the volume have the orientation returned by Recon3D.
 
 <a name="myfootnote1">1</a>: LaRoque, S. J., Sidky, E. Y., & Pan, X. (2008). Accurate image reconstruction from few-view and limited-angle data in diffraction tomography. JOSA A, 25(7), 1772-1782.
+
+## License
+
+This software is covered by the GNU General Public License.
