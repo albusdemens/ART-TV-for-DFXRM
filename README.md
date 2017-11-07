@@ -4,7 +4,7 @@ Copyright 2017, All rights reserved
 
 Technical University of Denmark, Kongens Lyngby, Denmark
 
-Code written by A. Cereser
+Code written by M. Busi, A. Cereser, I. Kazantsev
 
 ART-TV is a combination of the Algebraic Reconstruction Technique (ART) with the Total Variation (TV) approach<sup>[1](#myfootnote1)</sup>. For small diffraction angles, ART-TV can be used to reconstruct data collected during a topo-tomography scan. The algorithms of this package are designed for data collected using dark-field X-ray microscopy ([DFXRM](https://www.nature.com/articles/ncomms7098)) with the setup installed at beamline BL06 of the European Synchrotron Radiation Facility (ESRF).
 

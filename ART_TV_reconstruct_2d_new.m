@@ -1,3 +1,5 @@
+% Ivan Kazantsev, DTU Fysik
+
 function [f_out,itOut] = ART_TV_reconstruct_2d_new(proj_data,geoStruct, param,deadThresh,thresh,backVal,imStart)
 %
 %Input:
@@ -11,19 +13,19 @@ function [f_out,itOut] = ART_TV_reconstruct_2d_new(proj_data,geoStruct, param,de
 %
 %Follow this paper:
 % Accurate image reconstruction from few-views and limited-angle data in divergent-beam CT.
-% J. X-ray Sci. Tech. 2006a;14:119–139.
+% J. X-ray Sci. Tech. 2006a;14:119ï¿½139.
 %
 if (~strcmp(geoStruct.model,'lshape') && ~strcmp(geoStruct.model,'lshape1'))
-    
+
     range_angle=geoStruct.range_angle;
     num_ang=geoStruct.nproj;        % Number of projections
     num_det=geoStruct.ndet;         % Number of detector pixels
     det_space=geoStruct.det_space;  % The size of the detector in cm
     det_sample=det_space/num_det;   % Sampling of the detector line
     delta=geoStruct.delta;          % The pixel size of the input attenuation volume to reconsturcut
-    
+
     imageSize=geoStruct.imagesize;%Size that is returned
-    
+
     detect=zeros(num_det,2); %(x,y) coordinates of
     %if the detector is made of several 1d detectors with spacings between
     if geoStruct.nElem>1
@@ -32,29 +34,29 @@ if (~strcmp(geoStruct.model,'lshape') && ~strcmp(geoStruct.model,'lshape1'))
         plateSize=num_det/geoStruct.nElem;
         jump=plateSize:plateSize:num_det;
         shiftVal=0;
-        
+
         for k=1:num_det
             detect(k,1)=-det_space/2-det_sample/2 + k*det_sample+shiftVal*geoStruct.Sep;
             detect(k,2)=geoStruct.SDD-geoStruct.SAD; % just suffiently far from the rotation axis origin to +infty
-            
+
             if(k==jump(1))
                 jump(1)=[];%remove it
                 shiftVal=shiftVal+1;
             end
         end
-        
+
     else%or if we have one long detector of pixel elements
         for k=1:num_det
             detect(k,1)=-det_space/2-det_sample/2 + k*det_sample;
             detect(k,2)=geoStruct.SDD-geoStruct.SAD; % just suffiently far from the rotation axis origin to +infty
-            
+
         end
-        
+
     end
-    
+
     %if the detector origin is shifted add the shift
     detect(:,1)=detect(:,1)+geoStruct.detectCentShift;
-    
+
     if (strcmp(geoStruct.model,'par'))
         % Sources positions
         source=zeros(num_det,2); %(x,y) coordinates of
@@ -68,10 +70,10 @@ if (~strcmp(geoStruct.model,'lshape') && ~strcmp(geoStruct.model,'lshape1'))
         % columns are translates of this column
         [pointLOR, num_data] = par_beam_geometry(range_angle, num_ang, num_det, detect, source);
     end
-    
+
     if (strcmp(geoStruct.model,'fan'))
-        
-        
+
+
         % Sources positions
         source=zeros(num_det,2); %(x,y) coordinates of
         for k=1:num_det
@@ -84,14 +86,14 @@ if (~strcmp(geoStruct.model,'lshape') && ~strcmp(geoStruct.model,'lshape1'))
         % columns are translates of this column
         [pointLOR, num_data] = par_beam_geometry(range_angle, num_ang, num_det, detect, source);
     end
-    
+
 else%else if we have special L-shape
      if(strcmp(geoStruct.model,'lshape'))
     num_ang=geoStruct.nproj;
     delta=geoStruct.delta;          % The pxel size of the input attenuation volume
     imageSize=geoStruct.imagesize;% the reconstruction size
     [pointLOR,num_det] = findPointLORfromgeometry(num_ang,geoStruct.SADmove,[]);
-    
+
 %         %mergefactor every nth pixel
 %     nthPix=1;%
 %     start=1;
@@ -101,19 +103,19 @@ else%else if we have special L-shape
 %        temp2=pointLOR(start:adj,:);
 %        while (mod(size(temp2,1),nthPix)~=0)
 %        adj=adj-1;
-%     
+%
 %        temp2=pointLOR(start:adj,:);
 %        end
-%        
-%        start=num_det(jj)+1;      
+%
+%        start=num_det(jj)+1;
 %        p2lor=[p2lor squeeze(mean(reshape(temp2,nthPix,4,[]),1))];
 %     end
-%     
+%
 %     pointLOR=p2lor';
-    
+
     num_data=size(pointLOR,1);
      end
-     
+
       if(strcmp(geoStruct.model,'lshape1'))
               num_ang=geoStruct.nproj;
     delta=geoStruct.delta;          % The pxel size of the input attenuation volume
@@ -175,9 +177,9 @@ for iter=1:nIter
     if (useMoment==1 && iter==2)
         lambda=lambda;
     end
-    
-    
-    
+
+
+
     for k = itIDX
         if iter==1
             X1=pointLOR(k,1); Y1=pointLOR(k,2);
@@ -185,8 +187,8 @@ for iter=1:nIter
             [weightS, indI, indJ, nV, S] =  projection_matrix_row_2D(X1, Y1, X2, Y2, imageSize, delta, tol);
             weightS=S*weightS;
             ind = sub2ind([imageSize(1) imageSize(2)],indI,indJ);% using different imSize(1) and imSize(2) Allows reconstruction with differing (x,y) dims
-            
-            
+
+
             if proj_data(k)==deadThresh
                 nV=0;
             end
@@ -194,12 +196,12 @@ for iter=1:nIter
                 nV=0;%make sure to skip on next iter
                 binMask(ind)=1;
             end
-            
+
         else
             weightS=geo(k).weightS;
             ind=geo(k).ind;
             nV=geo(k).nV;
-            
+
             if iter==2%get rid of updates wrt. know air voxels(remain constant)
                 weightS=weightS(binMask(ind)==0);
                 ind=ind(binMask(ind)==0);
@@ -207,30 +209,30 @@ for iter=1:nIter
                 geo(k).weightS=weightS;
             end
         end
-        
+
         if(nV>0)%Check that the geometry lines are inside the volume
             if(iter==1)
                 %Is allways true after first iteration (with saving of geom)
                 projValueIter=sum(weightS.*f_inp(ind));
                 rowNorm=sum(weightS.*weightS);
                 product=(proj_data(k)-projValueIter)/rowNorm; %ART
-                
+
                 vCount(ind)=vCount(ind)+1;
                 %vSum(ind)=vSum(ind)+lambda*product*weightS;
                 f_inp(ind) = f_inp(ind) +lambda*product*weightS; %ART
-                
+
                 itIDX2=[itIDX2; k];
                 %save geometry for any iteration beyond 1
                 geo(k).weightS=weightS;
                 geo(k).ind=ind;
                 geo(k).nV=nV;
             else
-                
+
                 %Is allways true after first iteration (with saving of geom)
                 projValueIter=sum(weightS.*f_inp(ind));
                 rowNorm=sum(weightS.*weightS);
                 product=(proj_data(k)-projValueIter)/rowNorm; %ART
-                
+
                 %vMoment{k}=param.moment*vMoment{k}+lambda*product*weightS;
                 %vCount(ind)=vCount(ind)+1;
                 f_inp(ind) = f_inp(ind) +param.moment*vMomentF(ind)+lambda*product*weightS; %ART
@@ -238,29 +240,29 @@ for iter=1:nIter
             end
         end
     end %for k
-    
-    
+
+
     if iter==1
-        
+
         itIDX=itIDX2';%on all next iteration dont need to wasted time on useless lines
         itIDX(itIDX>numel(geo))=[];
     end
-    
+
     if rem(iter,10)==0
         itOut(:,:,round(iter/10))=f_inp;
     end
-    
+
     [f_TV] = TV_2D(f_inp, imageSize, nTV, epsTV, alpha);
     f_inp(:,:)=f_TV(:,:);
-    
-    
+
+
     f_inp=max(0,f_inp);
     f_inp(binMask==1)=backVal;%make sure background mask is set
-    
+
     vMomentF=(f_inp-f_old)./vCount;
     f_old=f_inp;
-    
-    
+
+
 end %nIter
 
 f_out=f_inp;
@@ -463,5 +465,3 @@ f_out(id1,id2) =(f(id1,id2)-f(id1-1,id2)+f(id1,id2)-f(id1,id2-1))./sqrt1 - (f(id
 
 
 return
-
-
